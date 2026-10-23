@@ -6,16 +6,16 @@
   <title>Audit Recon Withdraw - Dashboard QRIS vs Admin</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Alpine.js untuk Reaktivitas UI -->
+  <!-- Alpine.js -->
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-  <!-- SheetJS (XLSX) untuk Parsing Excel/CSV -->
+  <!-- SheetJS (XLSX) -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-sans" x-data="auditApp()">
 
-  <!-- Top Navigation Bar -->
+  <!-- Header Navigation -->
   <header class="bg-slate-800 border-b border-slate-700 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
       <div class="flex items-center space-x-3">
@@ -24,7 +24,7 @@
         </div>
         <div>
           <h1 class="font-bold text-lg text-white tracking-wide">ReconAudit QRIS vs Admin</h1>
-          <p class="text-xs text-slate-400">Verifikasi & Rekonsiliasi Withdraw Otomatis</p>
+          <p class="text-xs text-slate-400">Pencocokan Withdraw & Rekonsiliasi Otomatis</p>
         </div>
       </div>
       <button @click="resetData()" class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 text-xs rounded-md flex items-center gap-1.5 transition">
@@ -35,50 +35,49 @@
 
   <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
 
-    <!-- Section 1: Upload Files -->
+    <!-- Upload Files Section -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
       
-      <!-- Upload Dashboard QRIS (Multi-file per hari) -->
+      <!-- Upload Dashboard QRIS (Multi File Harian) -->
       <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg">
         <div class="flex justify-between items-center mb-3">
           <h2 class="font-semibold text-indigo-400 flex items-center gap-2">
-            <i data-lucide="files" class="w-5 h-5"></i> Dashboard QRIS (File Harian)
+            <i data-lucide="files" class="w-5 h-5"></i> Laporan QRIS / Disbursement (File Harian)
           </h2>
-          <span class="text-xs bg-indigo-500/10 text-indigo-400 px-2.5 py-1 rounded-full border border-indigo-500/20">Multi-File Supported</span>
+          <span class="text-xs bg-indigo-500/10 text-indigo-400 px-2.5 py-1 rounded-full border border-indigo-500/20">Multi-File</span>
         </div>
-        <p class="text-xs text-slate-400 mb-4">Unggah satu atau beberapa file Excel/CSV harian dari Dashboard QRIS.</p>
+        <p class="text-xs text-slate-400 mb-4">Unggah satu/beberapa file Excel/CSV harian dari Dashboard QRIS.</p>
         
         <label class="border-2 border-dashed border-slate-600 hover:border-indigo-500 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer bg-slate-800/50 hover:bg-slate-700/30 transition">
           <i data-lucide="upload-cloud" class="w-8 h-8 text-indigo-400 mb-2"></i>
-          <span class="text-sm font-medium text-slate-300">Pilih File QRIS (Harian)</span>
+          <span class="text-sm font-medium text-slate-300">Pilih File QRIS (Bisa Banyak File)</span>
           <span class="text-xs text-slate-500 mt-1">Format .xlsx, .xls, .csv</span>
           <input type="file" class="hidden" multiple accept=".xlsx, .xls, .csv" @change="handleQrisUpload($event)">
         </label>
 
-        <!-- Summary Status File QRIS -->
         <template x-if="qrisFiles.length > 0">
           <div class="mt-4 p-3 bg-slate-900/60 rounded-lg border border-slate-700 text-xs space-y-1">
             <div class="flex justify-between text-slate-300 font-medium">
-              <span>Total File QRIS Terunggah:</span>
+              <span>Total File Terunggah:</span>
               <span class="text-indigo-400 font-bold" x-text="qrisFiles.length + ' File'"></span>
             </div>
             <div class="flex justify-between text-slate-400">
               <span>Total Data Transaksi:</span>
-              <span class="text-white" x-text="qrisData.length + ' Transaksi'"></span>
+              <span class="text-white" x-text="qrisData.length + ' Baris'"></span>
             </div>
           </div>
         </template>
       </div>
 
-      <!-- Upload Dashboard Admin (1 File Rekap Panjang) -->
+      <!-- Upload Dashboard Admin (Rekap 1 Bulan+) -->
       <div class="bg-slate-800 border border-slate-700 rounded-xl p-5 shadow-lg">
         <div class="flex justify-between items-center mb-3">
           <h2 class="font-semibold text-emerald-400 flex items-center gap-2">
             <i data-lucide="file-spreadsheet" class="w-5 h-5"></i> Dashboard Admin (Rekap 1 Bulan+)
           </h2>
-          <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/20">Single Rekap File</span>
+          <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-full border border-emerald-500/20">Rekap Bulanan</span>
         </div>
-        <p class="text-xs text-slate-400 mb-4">Unggah 1 file laporan Admin (mencakup periode 1 bulan atau lebih).</p>
+        <p class="text-xs text-slate-400 mb-4">Unggah file laporan Admin (dapat berisi data 1 bulan atau lebih).</p>
         
         <label class="border-2 border-dashed border-slate-600 hover:border-emerald-500 rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer bg-slate-800/50 hover:bg-slate-700/30 transition">
           <i data-lucide="upload-cloud" class="w-8 h-8 text-emerald-400 mb-2"></i>
@@ -87,7 +86,6 @@
           <input type="file" class="hidden" accept=".xlsx, .xls, .csv" @change="handleAdminUpload($event)">
         </label>
 
-        <!-- Summary Status File Admin -->
         <template x-if="adminFileName">
           <div class="mt-4 p-3 bg-slate-900/60 rounded-lg border border-slate-700 text-xs space-y-1">
             <div class="flex justify-between text-slate-300 font-medium truncate">
@@ -96,7 +94,7 @@
             </div>
             <div class="flex justify-between text-slate-400">
               <span>Total Data Transaksi:</span>
-              <span class="text-white" x-text="adminData.length + ' Transaksi'"></span>
+              <span class="text-white" x-text="adminData.length + ' Baris'"></span>
             </div>
           </div>
         </template>
@@ -104,70 +102,67 @@
 
     </div>
 
-    <!-- Section 2: Ringkasan Audit / Summary Metrics -->
+    <!-- Metrics Summary -->
     <template x-if="auditResults.length > 0">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-3">
         <div class="bg-slate-800 border border-slate-700 p-4 rounded-xl">
           <p class="text-xs font-medium text-slate-400 uppercase">Total Audit</p>
-          <p class="text-2xl font-bold text-white mt-1" x-text="auditResults.length"></p>
+          <p class="text-xl font-bold text-white mt-1" x-text="auditResults.length"></p>
         </div>
         <div class="bg-slate-800 border border-emerald-500/30 bg-emerald-500/5 p-4 rounded-xl">
-          <p class="text-xs font-medium text-emerald-400 uppercase">Cocok (Matched)</p>
-          <p class="text-2xl font-bold text-emerald-400 mt-1" x-text="countStatus('MATCHED')"></p>
-        </div>
-        <div class="bg-slate-800 border border-amber-500/30 bg-amber-500/5 p-4 rounded-xl">
-          <p class="text-xs font-medium text-amber-400 uppercase">Selisih (Discrepancy)</p>
-          <p class="text-2xl font-bold text-amber-400 mt-1" x-text="countStatus('SELISIH')"></p>
+          <p class="text-xs font-medium text-emerald-400 uppercase">Matched (Lunas)</p>
+          <p class="text-xl font-bold text-emerald-400 mt-1" x-text="countStatus('MATCHED')"></p>
         </div>
         <div class="bg-slate-800 border border-rose-500/30 bg-rose-500/5 p-4 rounded-xl">
-          <p class="text-xs font-medium text-rose-400 uppercase">Unmatched / Missing</p>
-          <p class="text-2xl font-bold text-rose-400 mt-1" x-text="countStatus('MISSING_IN_ADMIN') + countStatus('MISSING_IN_QRIS')"></p>
+          <p class="text-xs font-medium text-rose-400 uppercase">Failed / Refund</p>
+          <p class="text-xl font-bold text-rose-400 mt-1" x-text="countStatus('FAILED_REFUND')"></p>
+        </div>
+        <div class="bg-slate-800 border border-amber-500/30 bg-amber-500/5 p-4 rounded-xl">
+          <p class="text-xs font-medium text-amber-400 uppercase">Missing Admin</p>
+          <p class="text-xl font-bold text-amber-400 mt-1" x-text="countStatus('MISSING_IN_ADMIN')"></p>
+        </div>
+        <div class="bg-slate-800 border border-purple-500/30 bg-purple-500/5 p-4 rounded-xl">
+          <p class="text-xs font-medium text-purple-400 uppercase">Missing QRIS</p>
+          <p class="text-xl font-bold text-purple-400 mt-1" x-text="countStatus('MISSING_IN_QRIS')"></p>
         </div>
       </div>
     </template>
 
-    <!-- Section 3: Filter & History Table -->
+    <!-- Filter Control & Table History -->
     <div class="bg-slate-800 border border-slate-700 rounded-xl overflow-hidden shadow-xl">
       
-      <!-- Panel Control Filter -->
       <div class="p-4 border-b border-slate-700 bg-slate-800/80 space-y-3 md:space-y-0 md:flex md:items-center md:justify-between gap-4">
-        
-        <!-- Search Input -->
         <div class="relative flex-1">
           <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
-          <input type="text" x-model="filterSearch" placeholder="Cari Ref ID, Nama, Transaksi..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+          <input type="text" x-model="filterSearch" placeholder="Cari Nama, Ref ID, User ID..." class="w-full bg-slate-900 border border-slate-700 rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500">
         </div>
 
-        <!-- Filters -->
         <div class="flex flex-wrap items-center gap-2">
-          
-          <!-- Filter Status Audit -->
           <select x-model="filterStatus" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-indigo-500">
             <option value="ALL">Semua Status Audit</option>
-            <option value="MATCHED">Matched (Cocok)</option>
-            <option value="SELISIH">Selisih Nominal</option>
-            <option value="MISSING_IN_ADMIN">Hilang di Admin</option>
-            <option value="MISSING_IN_QRIS">Hilang di QRIS</option>
+            <option value="MATCHED">Matched (Lunas)</option>
+            <option value="FAILED_REFUND">Failed / Refund</option>
+            <option value="MISSING_IN_ADMIN">Missing in Admin</option>
+            <option value="MISSING_IN_QRIS">Missing in QRIS</option>
           </select>
 
-          <!-- Filter Date Range -->
           <input type="date" x-model="filterDateStart" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-indigo-500">
           <span class="text-xs text-slate-500">s/d</span>
           <input type="date" x-model="filterDateEnd" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-300 focus:outline-none focus:border-indigo-500">
-
         </div>
       </div>
 
-      <!-- Tabel History Results -->
+      <!-- Table History -->
       <div class="overflow-x-auto">
         <table class="w-full text-left text-xs text-slate-300">
           <thead class="bg-slate-900/80 uppercase text-slate-400 font-semibold border-b border-slate-700">
             <tr>
               <th class="py-3 px-4">Tanggal</th>
-              <th class="py-3 px-4">Ref / Tx ID</th>
-              <th class="py-3 px-4 text-right">Nominal QRIS</th>
+              <th class="py-3 px-4">Nama Rekening / User</th>
+              <th class="py-3 px-4">Ref ID</th>
               <th class="py-3 px-4 text-right">Nominal Admin</th>
-              <th class="py-3 px-4 text-right">Selisih</th>
+              <th class="py-3 px-4 text-right">Nominal QRIS</th>
+              <th class="py-3 px-4 text-center">Status QRIS</th>
               <th class="py-3 px-4 text-center">Status Audit</th>
             </tr>
           </thead>
@@ -175,22 +170,30 @@
             <template x-for="(item, idx) in filteredAuditResults" :key="idx">
               <tr class="hover:bg-slate-700/30 transition">
                 <td class="py-3 px-4 whitespace-nowrap" x-text="item.date || '-'"></td>
-                <td class="py-3 px-4 font-mono text-slate-200" x-text="item.refId"></td>
-                <td class="py-3 px-4 text-right font-medium text-indigo-300" x-text="formatRupiah(item.amountQris)"></td>
-                <td class="py-3 px-4 text-right font-medium text-emerald-300" x-text="formatRupiah(item.amountAdmin)"></td>
-                <td class="py-3 px-4 text-right font-bold" :class="item.diff !== 0 ? 'text-amber-400' : 'text-slate-500'" x-text="formatRupiah(item.diff)"></td>
+                <td class="py-3 px-4 font-medium text-slate-200">
+                  <span x-text="item.name"></span>
+                  <span x-show="item.userId" class="text-[10px] text-slate-500 block" x-text="'ID: ' + item.userId"></span>
+                </td>
+                <td class="py-3 px-4 font-mono text-slate-400" x-text="item.refId"></td>
+                <td class="py-3 px-4 text-right font-medium text-emerald-400" x-text="formatRupiah(item.amountAdmin)"></td>
+                <td class="py-3 px-4 text-right font-medium text-indigo-400" x-text="formatRupiah(item.amountQris)"></td>
+                <td class="py-3 px-4 text-center">
+                  <span class="text-[10px] uppercase font-bold px-2 py-0.5 rounded"
+                        :class="item.disbStatus === 'success' ? 'text-emerald-400 bg-emerald-500/10' : (item.disbStatus.includes('failed') ? 'text-rose-400 bg-rose-500/10' : 'text-slate-500')"
+                        x-text="item.disbStatus"></span>
+                </td>
                 <td class="py-3 px-4 text-center">
                   <span x-show="item.status === 'MATCHED'" class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2.5 py-1 rounded-full text-[10px] font-semibold">MATCHED</span>
-                  <span x-show="item.status === 'SELISIH'" class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full text-[10px] font-semibold">SELISIH</span>
-                  <span x-show="item.status === 'MISSING_IN_ADMIN'" class="bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2.5 py-1 rounded-full text-[10px] font-semibold">MISSING IN ADMIN</span>
+                  <span x-show="item.status === 'FAILED_REFUND'" class="bg-rose-500/10 text-rose-400 border border-rose-500/20 px-2.5 py-1 rounded-full text-[10px] font-semibold">FAILED/REFUND</span>
+                  <span x-show="item.status === 'MISSING_IN_ADMIN'" class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-full text-[10px] font-semibold">MISSING IN ADMIN</span>
                   <span x-show="item.status === 'MISSING_IN_QRIS'" class="bg-purple-500/10 text-purple-400 border border-purple-500/20 px-2.5 py-1 rounded-full text-[10px] font-semibold">MISSING IN QRIS</span>
                 </td>
               </tr>
             </template>
             <template x-if="filteredAuditResults.length === 0">
               <tr>
-                <td colspan="6" class="py-8 text-center text-slate-500">
-                  <p>Belum ada data audit atau data tidak sesuai filter.</p>
+                <td colspan="7" class="py-8 text-center text-slate-500">
+                  <p>Belum ada data audit atau data tidak ditemukan pada filter.</p>
                 </td>
               </tr>
             </template>
@@ -211,7 +214,6 @@
         adminData: [],
         auditResults: [],
 
-        // State Filter
         filterSearch: '',
         filterStatus: 'ALL',
         filterDateStart: '',
@@ -221,31 +223,28 @@
           this.$nextTick(() => { lucide.createIcons(); });
         },
 
-        // Handler Upload QRIS (Multi File)
         async handleQrisUpload(event) {
           const files = Array.from(event.target.files);
           this.qrisFiles = [...this.qrisFiles, ...files];
 
           for (let file of files) {
             const data = await this.parseExcel(file);
-            const normalized = this.normalizeData(data, 'QRIS');
+            const normalized = this.normalizeQrisData(data);
             this.qrisData.push(...normalized);
           }
           this.runAudit();
         },
 
-        // Handler Upload Admin (Single Rekap File)
         async handleAdminUpload(event) {
           const file = event.target.files[0];
           if (!file) return;
 
           this.adminFileName = file.name;
           const data = await this.parseExcel(file);
-          this.adminData = this.normalizeData(data, 'ADMIN');
+          this.adminData = this.normalizeAdminData(data);
           this.runAudit();
         },
 
-        // Parser File Excel / CSV via SheetJS
         parseExcel(file) {
           return new Promise((resolve, reject) => {
             const reader = new FileReader();
@@ -262,131 +261,49 @@
           });
         },
 
-        // Normalisasi Kolom Data Excel (Deteksi nama kolom otomatis)
-        normalizeData(rawRows, type) {
+        normalizeQrisData(rawRows) {
           return rawRows.map(row => {
-            // Pemetaan nama kolom umum
-            const keys = Object.keys(row);
-            const refKey = keys.find(k => /ref|id|referensi|transaksi|tx/i.test(k)) || keys[0];
-            const amountKey = keys.find(k => /nominal|amount|jumlah|withdraw|kredit|total/i.test(k)) || keys[1];
-            const dateKey = keys.find(k => /tanggal|date|waktu|time/i.test(k)) || keys[2];
-
-            let rawAmount = row[amountKey];
-            if (typeof rawAmount === 'string') {
-              rawAmount = parseFloat(rawAmount.replace(/[^0-9.-]+/g, "")) || 0;
-            }
+            const name = String(row['ACCOUNT_NAME'] || row['Nama'] || '').trim();
+            let amount = row['AMOUNT'] || row['Jumlah'] || 0;
+            if (typeof amount === 'string') amount = parseFloat(amount.replace(/[^0-9.-]+/g, "")) || 0;
 
             return {
-              refId: String(row[refKey] || '').trim(),
-              amount: rawAmount || 0,
-              date: row[dateKey] ? String(row[dateKey]).substring(0, 10) : '',
-              source: type
+              refId: String(row['REF_ID'] || '').trim(),
+              name: name,
+              cleanName: name.toLowerCase(),
+              amount: amount,
+              date: String(row['DATE_DISBURSEMENT'] || '').substring(0, 10),
+              status: String(row['VENDOR_STATUS'] || 'success').toLowerCase().trim()
             };
-          }).filter(item => item.refId !== '');
+          }).filter(i => i.name !== '' || i.refId !== '');
         },
 
-        // Logic Utama Proses Audit/Rekonsiliasi
+        normalizeAdminData(rawRows) {
+          return rawRows.map(row => {
+            const name = String(row['Nama Tujuan Bank'] || row['ACCOUNT_NAME'] || '').trim().replace(/-$/, '').trim();
+            let amount = row['Jumlah'] || row['AMOUNT'] || 0;
+            if (typeof amount === 'string') amount = parseFloat(amount.replace(/[^0-9.-]+/g, "")) || 0;
+
+            return {
+              userId: String(row['UserId'] || '').trim(),
+              name: name,
+              cleanName: name.toLowerCase(),
+              amount: amount,
+              date: String(row['Tanggal penerimaan'] || '').substring(0, 10)
+            };
+          }).filter(i => i.name !== '');
+        },
+
         runAudit() {
           if (this.qrisData.length === 0 && this.adminData.length === 0) return;
 
           const results = [];
-          const adminMap = new Map();
+          const matchedQrisIndices = new Set();
 
-          // Map data admin berdasarkan ID Referensi
-          this.adminData.forEach(item => adminMap.set(item.refId, item));
-
-          const processedAdminRefs = new Set();
-
-          // Iterasi seluruh data QRIS
-          this.qrisData.forEach(qris => {
-            const adminMatch = adminMap.get(qris.refId);
-
-            if (adminMatch) {
-              processedAdminRefs.add(qris.refId);
-              const diff = Math.abs(qris.amount - adminMatch.amount);
-              results.push({
-                refId: qris.refId,
-                date: qris.date || adminMatch.date,
-                amountQris: qris.amount,
-                amountAdmin: adminMatch.amount,
-                diff: diff,
-                status: diff === 0 ? 'MATCHED' : 'SELISIH'
-              });
-            } else {
-              results.push({
-                refId: qris.refId,
-                date: qris.date,
-                amountQris: qris.amount,
-                amountAdmin: 0,
-                diff: qris.amount,
-                status: 'MISSING_IN_ADMIN'
-              });
-            }
-          });
-
-          // Cek data Admin yang tidak ada di QRIS
+          // Iterasi Data Admin
           this.adminData.forEach(admin => {
-            if (!processedAdminRefs.has(admin.refId)) {
-              results.push({
-                refId: admin.refId,
-                date: admin.date,
-                amountQris: 0,
-                amountAdmin: admin.amount,
-                diff: admin.amount,
-                status: 'MISSING_IN_QRIS'
-              });
-            }
-          });
+            let matchIdx = -1;
 
-          this.auditResults = results;
-          this.$nextTick(() => lucide.createIcons());
-        },
-
-        // Getter Computed untuk Filter Data Table
-        get filteredAuditResults() {
-          return this.auditResults.filter(item => {
-            // Filter Search
-            const matchSearch = this.filterSearch === '' || 
-              item.refId.toLowerCase().includes(this.filterSearch.toLowerCase());
-
-            // Filter Status
-            const matchStatus = this.filterStatus === 'ALL' || item.status === this.filterStatus;
-
-            // Filter Date Range
-            let matchDate = true;
-            if (this.filterDateStart && item.date) {
-              matchDate = matchDate && item.date >= this.filterDateStart;
-            }
-            if (this.filterDateEnd && item.date) {
-              matchDate = matchDate && item.date <= this.filterDateEnd;
-            }
-
-            return matchSearch && matchStatus && matchDate;
-          });
-        },
-
-        countStatus(status) {
-          return this.auditResults.filter(i => i.status === status).length;
-        },
-
-        formatRupiah(number) {
-          if (!number && number !== 0) return 'Rp 0';
-          return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(number);
-        },
-
-        resetData() {
-          this.qrisFiles = [];
-          this.qrisData = [];
-          this.adminFileName = '';
-          this.adminData = [];
-          this.auditResults = [];
-          this.filterSearch = '';
-          this.filterStatus = 'ALL';
-          this.filterDateStart = '';
-          this.filterDateEnd = '';
-        }
-      }));
-    });
-  </script>
-</body>
-</html>
+            // Cari Match Persis Nama & Nominal
+            for (let i = 0; i < this.qrisData.length; i++) {
+              if (matchedQris
